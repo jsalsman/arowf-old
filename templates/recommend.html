@@ -10,28 +10,33 @@
 #}
 {% extends "layout.html" %}
 {% block body %}
-    <form action="{{ url_for('recommend') }}" method=post>{# class=? for css? #}
-      <h2>Please implement this recommendation.</h2>
-        <h3>Question:</h3> 
-        {{ files['q'] }}
-        <h3>Proposed answer:</h3> 
-        {{ files['a'] }}
-        {% if files ['e'] is defined %}
-          {% if files ['t'] is defined %}
-            <h2>That answer had initially been opposed with these comments:</h2> 
-            {{ files['t'] }}
-          {% endif %}
-          <h2>The answer was endorsed with these comments:</h2> 
-          {{ files['e'] }}
-        {% else %}
-          <h2>The answer was opposed with these comments:</h2> 
-          {{ files['o'] }}
+  <form action="{{ url_for('recommend') }}" method=post>{# class=? for css? #}
+    <h2>Please implement this recommendation.</h2>
+      <h3>Question:</h3> 
+      {{ files['q']|safe }}
+      <h3>Proposed answer:</h3> 
+      {{ files['a']|safe }}
+      {% if files ['e'] is defined %}
+        {% if files ['t'] is defined %}
+          <h2>That answer had initially been opposed with these comments:</h2> 
+          {{ files['t']|safe }}
         {% endif %}
-        <h3>Your implementation:</h3>
-        <textarea name=resolution rows=5 cols=70></textarea>
-        <br />
-        <input type=submit name=response value=Done />
-        <input type=hidden name=record value={{ record }} />
-    </form>
+        <h2>The answer was endorsed with these comments:</h2> 
+        {{ files['e']|safe }}
+      {% else %}
+        <h2>The answer was opposed with these comments:</h2> 
+        {{ files['o']|safe }}
+      {% endif %}
+      <h3>Your implementation:</h3>
+      <textarea name=resolution  style="width: 80%; height: 15%;"></textarea>
+    <br/>
+    <h3>Optionally add a pertinent web page (e.g. diff or permalink):</h3>
+    <input id=iframeurl type=text name=iframeurl placeholder="Optional URL"
+           style="width: 70%;" />
+    <input type=button value=Preview onclick="LoadIframe(); return False;" />
+      <input type=submit name=response value=Done />
+      <input type=hidden name=record value={{ record }} />
+  </form>
+  <iframe id=iframeobj style="display: none; height: 40%; width: 100%;"></iframe>
 {% endblock %}
 

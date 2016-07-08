@@ -1,10 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
-    <form action="{{ url_for('ask') }}" method=post>{# class=? for css? #}
-      <h2>Please ask a question.</h2>
-        <h3>Your question:</h3>
-        <textarea name=question rows=5 cols=70></textarea>
-        <br />
-        <input type=submit value=Ask />
-    </form>
+  <form action="{{ url_for('ask') }}" method=post>
+    <h2>Ask a question:</h2>
+      <textarea name=question style="width: 80%; height: 15%;"></textarea>
+      <br/>
+      <h3>Optionally add a pertinent web page (e.g. diff or permalink):</h3>
+      <input id=iframeurl type=text name=iframeurl placeholder="Optional URL"
+             style="width: 70%;" />
+      <input type=button value=Preview onclick="LoadIframe(); return False;" />
+      <input type=submit value=Ask />
+  </form>
+  <iframe id=iframeobj style="display: none; height: 40%; width: 100%;"
+          ></iframe>
 {% endblock %}
+
