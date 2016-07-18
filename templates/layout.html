@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
+  <!-- arowf: Accuracy Review Of Wikipedias in Flask v.0.7a of July 14-17, 2016 -->
   <head>
-  <title>Minireview review system for arowf.org</title>
+  <title>arowf review system</title>
   <link rel=stylesheet type=text/css
    href="{{ url_for('static', filename='style.css') }}">
   <script type="text/javascript">
@@ -13,7 +14,7 @@
   </script>
   </head>
   <body>
-    <h1>Minireview</h1>
+    <h1>AROWF: Accuracy Review of Wikipedias in Flask</h1>
     {% for message in get_flashed_messages() %}
       <div class=flash>{{ message }}</div>
     {% endfor %}
