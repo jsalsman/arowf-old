@@ -1,9 +1,12 @@
+{# ask.html template
+arowf: Accuracy Review Of Wikipedias in Flask v.0.7a of July 14-17, 2016
+#}
 {% extends "layout.html" %}
 {% block body %}
   <form action="{{ url_for('ask') }}" method=post>
     <h2>Ask a question:</h2>
       <textarea name=question style="width: 80%; height: 15%;"></textarea>
-      <br/>
+      <br clear=all />
       <h3>Optionally add a pertinent web page (e.g. diff or permalink):</h3>
       <input id=iframeurl type=text name=iframeurl placeholder="Optional URL"
              style="width: 70%;" />
@@ -13,4 +16,3 @@
   <iframe id=iframeobj style="display: none; height: 40%; width: 100%;"
           ></iframe>
 {% endblock %}
-
