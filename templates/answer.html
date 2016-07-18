@@ -1,5 +1,9 @@
 {# answer.html template
 
+arowf: Accuracy Review Of Wikipedias in Flask
+
+arowf v.0.7a of July 14-17, 2016
+
    parameters:
      record: filenumber
      response: type of response needed, (a)nswer, (r)eview, or (t)iebreaker
@@ -20,7 +24,7 @@
       {{ files['q']|safe }}
       <h3>Your answer:</h3>
       <textarea name=answer style="width: 80%; height: 15%;"></textarea>
-      <br/>
+      <br clear=all />
       <h3>Optionally add a pertinent web page:</h3>
       <input id=iframeurl type=text name=iframeurl placeholder="Optional URL"
              style="width: 70%;" />
@@ -35,7 +39,7 @@
       {{ files['a']|safe }}
       <h3>Your comments:</h3>
       <textarea name=answer style="width: 80%; height: 15%;"></textarea>
-      <br/>
+      <br clear=all />
       <h3>Optionally add a pertinent web page:</h3>
       <input id=iframeurl type=text name=iframeurl placeholder="Optional URL"
              style="width: 40%;" />
@@ -53,7 +57,7 @@
       {{ files['o']|safe }}
       <h3>Your comments:</h3>
       <textarea name=answer  style="width: 80%; height: 15%;"></textarea>
-      <br/>
+      <br clear=all />
       <h3>Optionally add a pertinent web page:</h3>
       <input id=iframeurl type=text name=iframeurl placeholder="Optional URL"
              style="width: 40%;" />
@@ -66,4 +70,3 @@
   <iframe id=iframeobj name=iframeobj 
           style="display: none; height: 40%; width: 100%;"></iframe>
 {% endblock %}
-
