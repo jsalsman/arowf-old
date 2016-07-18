@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-@title:       minireview
-@description: Registration-free open source text-based blind review system
-@author:      Priyanka Mandikal and Jim Salsman
-@version:     0.6-alpha of July 7, 2016
-@license:     Apache v2 or latest with stronger patent sharing if available
-@seealso:     https://github.com/priyankamandikal for previous versions.
+@title:       arowf - accuracy review of wikipedias (in) flask.
+@description: Registration-free open source text-based blind review system.
+@author:      Priyanka Mandikal and Jim Salsman.
+@version:     0.7a prebeta of July 14-17, 2016.
+@license:     Apache v2 or latest with stronger patent sharing if available.
+@see:         https://github.com/priyankamandikal for previous and subsequent.
 
 ###@@@: means places that I want to continue working on;
 ###: introduces comments that involve lower-priority work to be done
@@ -22,7 +22,18 @@ recdir = 'records' + path.sep                     # data subdirectory
 urlregex = compile(r'((https|ftp|http)://(((?!</p>| )).)*)')
 ###@@@ make sure this handles unicode and parens
 
+maxinspect = 20  ###@@@ (TODO below:) how many done to /inspect
+
+### question type/search question: do we need question types beyond as
+### they can be described with their own strings inside the question?
+### If not, will HTML comments work for non-displayed codes?
+
 app = Flask(__name__) # create Flask WSGI application
+
+###@@@ TODO: registration: a form that emails you a unique invisible token 
+###          which you can paste into a field to add the token to the end 
+###          of your submissions to participate in reputation and work 
+###          tracking, and only shows up in /inspect's response search 
 
 app.secret_key = 'enable flash() session cookies' # does what that says
 
@@ -51,9 +62,11 @@ def frameurl(url):
     if match(urlregex, url):
         qurl = url.replace('"', '%22') # hexify quotation marks
         # if so, return indented html to display it as an iframe
-        return '\n\n<br/>\n<iframe src="'  + qurl + '" align=right style="' \
-            + 'height: 40%; width: 80%;">[Can not display <a href="' + qurl \
-            + '">' + qurl + '</a> inline as an iframe here.]</iframe>\n'
+        return '\n\n<br clear=all />\n<iframe src="'  + qurl \
+            + '" align=right style="height: 40%; width: 80%;">' \
+            + '[Can not display <a href="' + qurl + '">' + qurl \
+            + '</a> inline as an iframe here.]</iframe>i' \
+            + '<br clear=all \>\n'                 # less clutter?
     else:
         return ''
 
@@ -241,17 +254,35 @@ def inspect():
                             revieweragree = revieweragree + 1
                         elif 'e' in records[fn]: # opposition rejected
                             reviewerdised = reviewerdised + 1
+        ### last N with -d files by their date
+        done = {}                                # -d cmodtime -> filenumber
+        if 'd' in records[fn]:
+            fndtime = path.getmtime(recdir + fn + 'd')
+            if len(done) < maxinspect:
+                done[fndtime] = fn
+            else:
+                if fndtime >= max(done.keys()):
+                    del done[min(done.keys())]
+                    done[fndtime] = fn
+        showdone = '' ### html
+        #for fn in done.values().sort():          # show latest in -q order
+        #    showdone = showdone + ###@@@
+        pass
     # summary statistics
     count, first, last = len(records), min(filenums), max(filenums)
     mindate, maxdate = min(filemodtimes), max(filemodtimes)
     if len(filemodtimes) > 0:
-        meandate = sum(filemodtimes) / len(filemodtimes)
+        meandate = ctime(sum(filemodtimes) / len(filemodtimes))
     else:
         meandate = 'n/a'
+    denom = revieweragree + reviewerdised # agreement ratio
+    if denom > 0:
+        ratio='%2.0f%%' % ((revieweragree+0.0 / denom) * 100)
+    else:
+        ratio='n/a'
     return render_template('inspect.html', count=count, first=first, \
         last=last, mindate=ctime(mindate), maxdate=ctime(maxdate), \
-        meandate=ctime(meandate), \
-        searchstring=searchstring, \
+        meandate=meandate, searchstring=searchstring, \
         stringqs=len(stringtimes['q']), \
         sqmn=mintime(stringtimes['q']), sqmx=maxtime(stringtimes['q']), \
         stringas=len(stringtimes['a']), \
@@ -268,18 +299,24 @@ def inspect():
         reves=len(stringtimes['e']), revos=len(stringtimes['o']), \
         revts=len(stringtimes['t']), reviewercount=reviewercount, \
         revieweragree=revieweragree, reviewerdised=reviewerdised, \
-        ratio='%2.0f%%' % \
-               ((revieweragree+0.0 / (reviewerdised + revieweragree)) * 100))
+        ratio=ratio, showdone=showdone)
 
 #@app.errorhandler(404)
 #def not_found(error):
 #    return render_template('error.html'), 404
 
+# No cache
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, must-revalidate'
+    return response
+
 if __name__ == '__main__':
     app.run(
       use_reloader = True # reloads this source file when changed
-    ## , use_debugger=True # see http://flask.pocoo.org/docs/0.11/errorhandling/
-           )                    # runs on http://127.0.0.1:5000/
+      ##, use_debugger=True
+      ##, debug = True # see http://flask.pocoo.org/docs/0.11/errorhandling/
+           )
+                       # runs on http://127.0.0.1:5000/
 
 # end
-
