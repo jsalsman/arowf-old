@@ -1,5 +1,7 @@
 {# recommend.html template
 
+arowf: Accuracy Review Of Wikipedias in Flask v.0.7a of July 14-17, 2016
+
    parameters:
      record: filenumber
      files: dictionary mapping from suffixes (q,a,e,o,t) to text
@@ -24,7 +26,9 @@
         <h2>The answer was endorsed with these comments:</h2> 
         {{ files['e']|safe }}
       {% else %}
-        <h2>The answer was opposed with these comments:</h2> 
+        <h2>The answer had initially been opposed with these comments:</h2> 
+        {{ files['t']|safe }}
+        <h2>The answer was finally opposed with these comments:</h2> 
         {{ files['o']|safe }}
       {% endif %}
       <h3>Your implementation:</h3>
@@ -39,4 +43,3 @@
   </form>
   <iframe id=iframeobj style="display: none; height: 40%; width: 100%;"></iframe>
 {% endblock %}
-
